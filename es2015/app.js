@@ -140,13 +140,25 @@ class TripService
     findByName(tripName) 
     {
         // TODO return promise
-        return new Promise(funtion(resolve,reject)
+        return new Promise((resolve,reject) => 
         {
-            setTimeout(fn,delay);
-            
-        })
+            setTimeout(() => 
+            {
+                const tripResearch = Array.from(this.trips).find(element=>tripName===element.name)
+                if(tripResearch)
+                {
+                    resolve(tripResearch)
+                }
+                else
+                {
+                    reject('Pas de trip enregistré dans la ville de : '+tripName)
+                }
+            },2000)
+        }
+        )
     }
 }
+
 
 class PriceService {
 
@@ -155,13 +167,57 @@ class PriceService {
         // 'paris' --> price = 100
         // 'rio-de-janeiro' --> price = 800)
         // no price for 'nantes'
-        let prices = new Map()
-        prices.set('paris',100)
-        prices.set('rio-de-janeiro',800)
+        this.prices = new Map()
+        this.prices.set('paris',100)
+        this.prices.set('rio-de-janeiro',800)
 
     }
 
-    findPriceByTripId(tripId) {
+    findPriceByTripId(tripId) 
+    {
         // TODO return promise
+        return new Promise((resolve,reject) => 
+        {
+            setTimeout(() => 
+            {
+                const priceResearch = this.prices.get(tripId)
+                if(priceResearch)
+                {
+                    resolve(priceResearch)
+                }
+                else
+                {
+                    reject('No price for id : ' +tripId)
+                }
+            },2000)
+        })
     }
 }
+
+let tripServiceParis = new TripService()
+tripServiceParis.findByName('Paris')
+    .then(res => lg('Trip found : ' + res.name))
+    .catch(err => lg(err));
+
+
+let tripServiceToulouse = new TripService()
+tripServiceToulouse.findByName('Toulouse')
+    .then(res => lg('Trip found : ' + res))
+    .catch(err => lg(err))
+
+let tripServiceRio = new TripService()
+let priceServiceRio = new PriceService()
+
+tripServiceRio.findByName('Rio de Janeiro')
+.then(trip => priceServiceRio.findPriceByTripId(trip.id))
+.then(price =>  lg('Price found : '+price))
+.catch(err => lg(err));
+
+let tripServiceNantes = new TripService()
+let priceServiceNantes = new PriceService()
+
+tripServiceNantes.findByName('Nantes')
+.then(trip => priceServiceNantes.findPriceByTripId(trip.id))
+.then(price =>  lg('Price found : '+price))
+.catch(err => lg(err));
+
