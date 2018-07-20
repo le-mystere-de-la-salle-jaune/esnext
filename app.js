@@ -19,22 +19,22 @@ console.log(citiesId);
 function getWeather(cityId) {
     let city = cityId.toUpperCase();
     let temperature = 20;
-    return {city, temperature};
+    return { city, temperature };
 }
 
 const weather = getWeather(favoriteCityId);
 console.log(weather);
 
 //affectation destructurée
-let affectation = {city : weather.city, temperature : weather.temperature};
+let affectation = { city: weather.city, temperature: weather.temperature };
 
-let {city, temperature} = affectation;
+let { city, temperature } = affectation;
 
 console.log(city);
 console.log(temperature);
 
 // Rest operator
-const  [parisId, nycId, ...othersCitiesId] = citiesId;
+const [parisId, nycId, ...othersCitiesId] = citiesId;
 console.log(parisId);
 console.log(nycId);
 console.log(othersCitiesId.length);
@@ -51,7 +51,7 @@ class Trip {
         return 'Trip [' + this.id + ', ' + this.name + ', ' + this.imageUrl + ', ' + this.price + ']';
     }
 
-    get price(){
+    get price() {
         return this._price;
     }
 
@@ -99,15 +99,39 @@ class TripService {
 
     constructor() {
         this.trips = new Set();
-        trips.add(new Trip('paris', 'Paris', 'img/paris.jpg'));
-        trips.add(new Trip('nantes', 'Nantes', 'img/nantes.jpg'));
-        trips.add(new Trip('rio-de-janeiro', 'Rio de Janeiro', 'img/rio-de-janeiro.jpg'));
+        this.trips.add(new Trip('paris', 'Paris', 'img/paris.jpg'));
+        this.trips.add(new Trip('nantes', 'Nantes', 'img/nantes.jpg'));
+        this.trips.add(new Trip('rio-de-janeiro', 'Rio de Janeiro', 'img/rio-de-janeiro.jpg'));
     }
 
     findByName(tripName) {
-        return new Promise(resolve, reject) => )
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const trip = Array.from(this.trips).find(t => t.name == tripName);
+
+                const trip1 = Array.from(this.trips).find(function (element) {
+                    return element.name == tripName
+                });
+
+                if (trip) {
+                    resolve(trip);
+                } else {
+                    reject(`No trip with name ${tripName}`);    
+                }
+            }, 2000);
+        });
     }
 }
+
+// effectue une recherche avec la valeur
+let tripService = new TripService();
+let trip$ = tripService.findByName('Toulouse');
+
+trip$.then((res) => {
+    console.log(res.name)
+}, (err) => {
+    console.log(err)
+});
 
 class PriceService {
 
@@ -118,10 +142,26 @@ class PriceService {
     }
 
     findPriceByTripId(tripId) {
-        // TODO return promise
+       return new Promise((resolve, reject) => {
+           setTimeout(() => {
+const tripPrice = this.trips.get(tripId);
+if (tripPrice) {
+    resolve(`Price found: ${tripPrice}`)
+} else {
+    reject(`No price for trip : ${tripId}`);
+
+}
+           }, 2000 );
+       });
     }
 }
 
+let priceService = new PriceService();
+
+tripService.findByName('Rio de Janeiro')
+    .then(element => { return priceService.findPriceByTripId(element.id) })
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
 
 
 
