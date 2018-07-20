@@ -87,10 +87,10 @@ class TripService {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 const recherche = Array.from(this.cities).find(element => element.name === tripName)
-                if(recherche){
-                    resolve(console.log(recherche))
+                if (recherche) {
+                    resolve(recherche)
                 } else {
-                    reject(console.log("No trip with name " + tripName))
+                    reject("No trip with name " + tripName)
                 }
             }, 2000)
 
@@ -113,12 +113,12 @@ class PriceService {
 
     findPriceByTripId(tripId) {
         return new Promise((resolve, reject) => {
-            setTimeout( () => {
-                const recherche = this.price.get(tripId)
-                if(recherche){
-                    resolve(console.log(recherche))
+            setTimeout(() => {
+                const tripPrice = this.price.get(tripId)
+                if (tripPrice) {
+                    resolve(tripPrice)
                 } else {
-                    reject(console.log("No price for trip " + tripId))
+                    reject("No price for trip " + tripId)
                 }
             }, 2000)
 
@@ -130,5 +130,14 @@ class PriceService {
 let tripService = new TripService()
 let priceService = new PriceService()
 
-tripService.findByName('Paris')
-priceService.findPriceByTripId('paris')
+tripService.findByName('Rio de Janeiro').then(element => console.log(element.toString())).catch(error => console.log(error))
+priceService.findPriceByTripId('paris').then(price => console.log("Price found :", price)).catch(noPrice => console.log(noPrice))
+
+priceService.findPriceByTripId('toulouse')
+    .then(success => console.log("Price found :", success))
+    .catch(error => console.log(error))
+
+tripService.findByName('Rio de Janeiro')
+    .then(trip => priceService.findPriceByTripId(trip.id))
+    .then(prix => console.log("Price found :", prix))
+    .catch(error => console.log(error))
