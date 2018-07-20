@@ -4,12 +4,16 @@ console.log(favoriteCityId)
 favoriteCityId = 'bayonne'
 console.log(favoriteCityId)
 
+console.log('¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤')
+
 /** const */
 const citiesId = ['paris', 'nyc', 'rome', 'rio-de-janeiro']
 console.log(citiesId)
 //citiesId = []    TypeError: Assignment to constant variable.
 citiesId.push('tokyo')
 console.log(citiesId)
+
+console.log('¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤')
 
 /** Création d'objet */
 getWeather = function (cityId) {
@@ -21,16 +25,22 @@ getWeather = function (cityId) {
 const weather = getWeather(favoriteCityId)
 console.log(weather)
 
+console.log('¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤')
+
 /** Affectation destructurée */
 const { city, temperature } = weather
 console.log(city)
 console.log(temperature)
+
+console.log('¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤')
 
 /** Rest operator */
 const [parisId, nycId, ...othersCitiesId] = citiesId
 console.log(parisId)
 console.log(nycId)
 console.log(othersCitiesId.length)
+
+console.log('¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤')
 
 /** Classe */
 class Trip {
@@ -71,6 +81,8 @@ const defaultTrip = Trip.getDefaultTrip()
 
 console.log(defaultTrip.toString())
 
+console.log('¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤')
+
 /** Héritage */
 class FreeTrip extends Trip {
     constructor(id, name, imageUrl) {
@@ -87,9 +99,10 @@ const freeTrip = new FreeTrip('nantes', 'Nantes', 'img/nantes.jpg')
 
 console.log(freeTrip.toString())
 
+console.log('¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤')
+
 /** Promise, Set, Map, ArrowFunction */
 class TripService {
-
     constructor() {
         this.cities = new Set()
         this.cities.add(new Trip('paris', 'Paris', 'img/paris.jpg'))
@@ -101,15 +114,14 @@ class TripService {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 const tripRecherche = Array.from(this.cities).find(c => c.name === tripName)
-                if (tripRecherche) resolve(console.log(`Trip found : ${tripRecherche}`))
-                else reject(console.log(`No trip with name ${tripName}`))
+                if (tripRecherche) resolve(tripRecherche)
+                else reject(`No trip with name ${tripName}`)
             }, 2000)
         })
     }
 }
 
 class PriceService {
-
     constructor() {
         this.prices = new Map()
         this.prices.set('paris', 100)
@@ -120,9 +132,9 @@ class PriceService {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 const priceRecherche = this.prices.get(tripId)
-                if (tripId) resolve(console.log(`Price found : ${priceRecherche}`))
-                else reject(console.log(`No price from trip id ${tripId}`))
-            })
+                if (priceRecherche) resolve(priceRecherche)
+                else reject(`No price from trip id ${tripId}`)
+            }, 2000)
         })
     }
 }
@@ -131,6 +143,27 @@ let tripService = new TripService()
 let priceService = new PriceService()
 
 tripService.findByName('Paris')
+    .then((res) => {
+        console.log(`Trip found : ${res}`)
+    },
+        (err) => {
+            console.log(err)
+        }
+    )
 tripService.findByName('Toulouse')
-priceService.findPriceByTripId(tripService.findByName('Rio de Janeiro'))
-priceService.findPriceByTripId(tripService.findByName('Nantes'))
+    .then((res) => {
+        console.log(`Trip found : ${res}`)
+    },
+        (err) => {
+            console.log(err)
+        }
+    )
+tripService.findByName('Rio de Janeiro')
+    .then((trip) => priceService.findPriceByTripId(trip.id))
+    .then((price) => console.log(`Price found : ${price}`))
+    .catch((msgErr) => console.log(msgErr))
+
+tripService.findByName('Nantes')
+    .then((trip) => priceService.findPriceByTripId(trip.id))
+    .then((price) => console.log(`Price found : ${price}`))
+    .catch((msgErr) => console.log(msgErr))
